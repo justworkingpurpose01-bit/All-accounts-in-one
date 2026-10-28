@@ -36,9 +36,9 @@ jobs:
       - name: Build Debug APK with Gradle
         run: |
           if [ -f "./gradlew" ]; then
-            ./gradlew assembleDebug --no-daemon --stacktrace
+            ./gradlew assembleDebug --no-daemon --stacktrace -Djava.awt.headless=true
           else
-            gradle assembleDebug --no-daemon --stacktrace
+            gradle assembleDebug --no-daemon --stacktrace -Djava.awt.headless=true
           fi
 
       - name: Upload Debug APK Artifact
