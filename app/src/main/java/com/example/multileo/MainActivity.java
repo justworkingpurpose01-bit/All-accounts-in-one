@@ -35,7 +35,9 @@ import androidx.webkit.ProfileStore;
 import androidx.webkit.WebViewCompat;
 import androidx.webkit.WebViewFeature;
 
-import com.example.R;
+// আপনার app/build.gradle-এ যদি namespace 'com.example.multileo' থাকে তবে এটি অটোমেটিক কাজ করবে
+import com.example.multileo.R;
+
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.progressindicator.LinearProgressIndicator;
 
@@ -198,10 +200,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * Initializes 4 isolated WebView instances.
-     * Uses AndroidX WebKit ProfileStore (Multi-Profile API) to bind each WebView
-     * to a unique profile ("profile_0", "profile_1", etc.) for strict sandbox isolation
-     * of cookies, cache, localStorage, and IndexedDB.
+     * ৪টি স্বাধীন ও বিচ্ছিন্ন (Isolated) সেশন তৈরি করে।
+     * AndroidX WebKit ProfileStore ব্যবহার করে প্রতিটি WebView-কে স্বতন্ত্র প্রোফাইল ("profile_1", "profile_2" ইত্যাদি) প্রদান করে।
      */
     private void setupProfilesAndWebViews() {
         boolean isMultiProfileSupported = WebViewFeature.isFeatureSupported(WebViewFeature.MULTI_PROFILE);
@@ -222,7 +222,7 @@ public class MainActivity extends AppCompatActivity {
             ));
             webView.setVisibility(View.GONE);
 
-            // Configure multi-profile isolation before loading any URL
+            // URL লোড করার পূর্বেই আইসোলেটেড প্রোফাইল সেট করা
             if (isMultiProfileSupported && profileStore != null) {
                 Profile profile = profileStore.getOrCreateProfile(profileId);
                 WebViewCompat.setProfile(webView, profileId);
@@ -231,7 +231,7 @@ public class MainActivity extends AppCompatActivity {
             configureWebSettings(webView);
             configureClients(webView, profileIndex);
 
-            // Load Leonardo.ai session for this profile
+            // প্রতিটি প্রোফাইলের জন্য Leonardo.ai লোড করা
             webView.loadUrl(LEONARDO_URL);
 
             webViews[i] = webView;
@@ -242,35 +242,33 @@ public class MainActivity extends AppCompatActivity {
     private void configureWebSettings(WebView webView) {
         WebSettings settings = webView.getSettings();
 
-        // 1. JavaScript & Storage
+        // ১. জাভাস্ক্রিপ্ট ও স্টোরেজ চালু
         settings.setJavaScriptEnabled(true);
         settings.setDomStorageEnabled(true);
         settings.setDatabaseEnabled(true);
 
-        // 2. Hardware acceleration & rendering
+        // ২. রেন্ডারিং ও জুম
         settings.setLoadWithOverviewMode(true);
         settings.setUseWideViewPort(true);
         settings.setBuiltInZoomControls(true);
         settings.setDisplayZoomControls(false);
         settings.setSupportZoom(true);
 
-        // 3. File & Resource access for creative canvas uploads
+        // ৩. ফাইল ও রিসোর্স অ্যাক্সেস
         settings.setAllowFileAccess(true);
         settings.setAllowContentAccess(true);
         settings.setMixedContentMode(WebSettings.MIXED_CONTENT_COMPATIBILITY_MODE);
         settings.setMediaPlaybackRequiresUserGesture(false);
 
-        // 4. Modern Chrome Mobile User-Agent
-        // Stripping WebView tags ('; wv' and 'Version/4.0') prevents Google OAuth restrictions
-        // and enables full Leonardo.ai WebGL / modern web features.
+        // ৪. মডার্ন ক্রোম মোবাইল ইউজার এজেন্ট (OAuth ও WebGL সাপোর্টের জন্য)
         String defaultUa = settings.getUserAgentString();
         String modernUa = defaultUa.replace("; wv", "").replace("Version/4.0 ", "");
         settings.setUserAgentString(modernUa);
 
-        // 5. Cache settings
+        // ৫. ক্যাশ সেটিংস
         settings.setCacheMode(WebSettings.LOAD_DEFAULT);
 
-        // 6. Cookies
+        // ৬. কুকিজ
         CookieManager cookieManager = CookieManager.getInstance();
         cookieManager.setAcceptCookie(true);
         cookieManager.setAcceptThirdPartyCookies(webView, true);
@@ -280,7 +278,6 @@ public class MainActivity extends AppCompatActivity {
         webView.setWebViewClient(new WebViewClient() {
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
-                // Keep all navigation within this profile's isolated WebView
                 return false;
             }
 
@@ -331,7 +328,6 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onPermissionRequest(PermissionRequest request) {
-                // Grant camera/microphone/canvas permissions requested by the web app
                 request.grant(request.getResources());
             }
 
@@ -358,7 +354,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * Smoothly switches between isolated profiles without destroying active sessions or WebViews.
+     * সেশন রিলোড না করে তাৎক্ষণিকভাবে নির্বাচিত প্রোফাইলে সুইচ করে।
      */
     private void switchToProfile(int index) {
         if (index < 0 || index >= NUM_PROFILES) return;
@@ -370,7 +366,6 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-        // Update Top Bar & Profile Identity
         int activeColor = profileColors[index];
         viewProfileIndicator.setBackgroundColor(activeColor);
         tvCurrentProfile.setText(profileNames[index]);
@@ -386,6 +381,7 @@ public class MainActivity extends AppCompatActivity {
             btnBack.setEnabled(active.canGoBack());
             btnBack.setAlpha(active.canGoBack() ? 1.0f : 0.4f);
 
+            // এখানে canGoForward() ঠিক করা হয়েছে:
             btnForward.setEnabled(active.canGoForward());
             btnForward.setAlpha(active.canGoForward() ? 1.0f : 0.4f);
         }
@@ -398,9 +394,6 @@ public class MainActivity extends AppCompatActivity {
         return null;
     }
 
-    /**
-     * Prompts the user to clear cookies, cache, and local storage for the active profile only.
-     */
     private void showClearDataConfirmationDialog() {
         new AlertDialog.Builder(this)
                 .setTitle(profileNames[currentProfileIndex])
