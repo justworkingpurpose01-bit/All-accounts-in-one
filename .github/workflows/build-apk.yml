@@ -33,6 +33,21 @@ jobs:
             chmod +x gradlew
           fi
 
+      - name: Prepare keystore and environment files
+        run: |
+          if [ ! -f ".env" ] && [ -f ".env.example" ]; then
+            cp .env.example .env
+          fi
+          if [ -f "debug.keystore.base64" ]; then
+            echo "Restoring debug.keystore from debug.keystore.base64..."
+            base64 -d debug.keystore.base64 > debug.keystore
+          fi
+          if [ ! -f "debug.keystore" ]; then
+            echo "Generating fallback debug.keystore with keytool..."
+            keytool -genkeypair -v -keystore debug.keystore -storepass android -alias androiddebugkey -keypass android -keyalg RSA -keysize 2048 -validity 10000 -dname "CN=Android Debug,O=Android,C=US"
+          fi
+          ls -la debug.keystore
+
       - name: Build Debug APK with Gradle
         run: |
           if [ -f "./gradlew" ]; then
