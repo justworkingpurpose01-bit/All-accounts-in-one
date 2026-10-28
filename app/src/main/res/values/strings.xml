@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">MultiLeo</string>
+    <string name="title_profile_1">Profile 1</string>
+    <string name="title_profile_2">Profile 2</string>
+    <string name="title_profile_3">Profile 3</string>
+    <string name="title_profile_4">Profile 4</string>
+    <string name="status_isolated">Isolated Session</string>
+    <string name="action_refresh">Refresh</string>
+    <string name="action_back">Back</string>
+    <string name="action_forward">Forward</string>
+    <string name="action_clear">Clear Profile Data</string>
+    <string name="action_clear_confirm">Are you sure you want to clear cookies, cache, and local storage for this profile?</string>
+    <string name="clear_success">Profile data cleared</string>
+    <string name="dialog_cancel">Cancel</string>
+    <string name="dialog_clear">Clear</string>
+</resources>
