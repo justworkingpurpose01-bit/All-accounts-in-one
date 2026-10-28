@@ -4,6 +4,7 @@
     <string name="title_profile_2">Profile 2</string>
     <string name="title_profile_3">Profile 3</string>
     <string name="title_profile_4">Profile 4</string>
+    <string name="title_profile_format">Profile %d</string>
     <string name="status_isolated">Isolated Session</string>
     <string name="action_refresh">Refresh</string>
     <string name="action_back">Back</string>
@@ -13,4 +14,10 @@
     <string name="clear_success">Profile data cleared</string>
     <string name="dialog_cancel">Cancel</string>
     <string name="dialog_clear">Clear</string>
+    <string name="loading_session">Connecting to Leonardo.ai…</string>
+    <string name="error_loading">Could not load Leonardo.ai. Please check internet connection.</string>
+    <string name="action_retry">Retry</string>
+    <string name="action_switch_tabs">All Tabs</string>
+    <string name="title_tab_switcher">Switch Profile (16 Sessions)</string>
+    <string name="subtitle_tab_switcher">Each session has isolated cookies &amp; storage with zero memory lag</string>
 </resources>

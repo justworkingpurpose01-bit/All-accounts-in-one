@@ -1,6 +1,8 @@
 {
   "name": "MultiLeo",
-  "description": "Multi-session Leonardo.ai runner with 4 completely isolated browser profiles, cookies, and local storage.",
+  "description": "Multi-session Leonardo.ai runner with 16 completely isolated browser profiles, zero-lag background freezing, and independent storage.",
   "requestFramePermissions": [],
-  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
 }

@@ -12,14 +12,27 @@
     <color name="bg_dark">#0F172A</color>
     <color name="surface_dark">#1E293B</color>
     <color name="surface_border">#334155</color>
+    <color name="surface_card">#24334C</color>
     <color name="text_primary">#F8FAFC</color>
     <color name="text_secondary">#94A3B8</color>
 
-    <!-- Profile Identity Colors -->
+    <!-- 16 Profile Identity Colors -->
     <color name="profile_1_color">#6366F1</color>
     <color name="profile_2_color">#06B6D4</color>
     <color name="profile_3_color">#10B981</color>
     <color name="profile_4_color">#F59E0B</color>
+    <color name="profile_5_color">#EC4899</color>
+    <color name="profile_6_color">#8B5CF6</color>
+    <color name="profile_7_color">#3B82F6</color>
+    <color name="profile_8_color">#14B8A6</color>
+    <color name="profile_9_color">#84CC16</color>
+    <color name="profile_10_color">#EAB308</color>
+    <color name="profile_11_color">#F97316</color>
+    <color name="profile_12_color">#EF4444</color>
+    <color name="profile_13_color">#D946EF</color>
+    <color name="profile_14_color">#A855F7</color>
+    <color name="profile_15_color">#0284C7</color>
+    <color name="profile_16_color">#059669</color>
 
     <color name="accent_pink">#EC4899</color>
 </resources>
