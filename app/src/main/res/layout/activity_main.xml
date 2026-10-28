@@ -4,16 +4,16 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/bg_dark"
+    android:background="#0F172A"
     android:fitsSystemWindows="true"
     android:orientation="vertical">
 
-    <!-- Top Action & Navigation Bar -->
+    <!-- Top Action Bar -->
     <LinearLayout
         android:id="@+id/topBar"
         android:layout_width="match_parent"
         android:layout_height="52dp"
-        android:background="@color/surface_dark"
+        android:background="#1E293B"
         android:gravity="center_vertical"
         android:orientation="horizontal"
         android:paddingHorizontal="6dp">
@@ -23,29 +23,29 @@
             android:layout_width="38dp"
             android:layout_height="38dp"
             android:background="?attr/selectableItemBackgroundBorderless"
-            android:contentDescription="@string/action_back"
+            android:contentDescription="Back"
             android:src="@drawable/ic_arrow_back"
-            app:tint="@color/text_secondary" />
+            app:tint="#94A3B8" />
 
         <ImageButton
             android:id="@+id/btnForward"
             android:layout_width="38dp"
             android:layout_height="38dp"
             android:background="?attr/selectableItemBackgroundBorderless"
-            android:contentDescription="@string/action_forward"
+            android:contentDescription="Forward"
             android:src="@drawable/ic_arrow_forward"
-            app:tint="@color/text_secondary" />
+            app:tint="#94A3B8" />
 
         <ImageButton
             android:id="@+id/btnRefresh"
             android:layout_width="38dp"
             android:layout_height="38dp"
             android:background="?attr/selectableItemBackgroundBorderless"
-            android:contentDescription="@string/action_refresh"
+            android:contentDescription="Refresh"
             android:src="@drawable/ic_refresh"
-            app:tint="@color/text_secondary" />
+            app:tint="#94A3B8" />
 
-        <!-- Profile Identifier & Isolation Badge -->
+        <!-- Profile Title -->
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -64,14 +64,14 @@
                     android:layout_width="9dp"
                     android:layout_height="9dp"
                     android:layout_marginEnd="6dp"
-                    android:background="@drawable/ic_drag_handle_bg" />
+                    android:background="#6366F1" />
 
                 <TextView
                     android:id="@+id/tvCurrentProfile"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Profile 1"
-                    android:textColor="@color/text_primary"
+                    android:textColor="#F8FAFC"
                     android:textSize="14sp"
                     android:textStyle="bold" />
             </LinearLayout>
@@ -80,12 +80,12 @@
                 android:id="@+id/tvIsolationStatus"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/status_isolated"
-                android:textColor="@color/text_secondary"
+                android:text="Isolated Session"
+                android:textColor="#94A3B8"
                 android:textSize="10sp" />
         </LinearLayout>
 
-        <!-- Tab Switcher Grid Button with 16-Badge Indicator -->
+        <!-- 16-Tab Switcher Button -->
         <FrameLayout
             android:id="@+id/btnTabOverview"
             android:layout_width="44dp"
@@ -98,9 +98,9 @@
                 android:layout_width="22dp"
                 android:layout_height="22dp"
                 android:layout_gravity="center"
-                android:contentDescription="@string/action_switch_tabs"
-                android:src="@drawable/ic_grid_view"
-                app:tint="@color/text_primary" />
+                android:contentDescription="Tabs"
+                android:src="@drawable/ic_refresh"
+                app:tint="#F8FAFC" />
 
             <TextView
                 android:id="@+id/tvTabBadge"
@@ -108,33 +108,32 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="top|end"
                 android:layout_marginEnd="2dp"
-                android:background="@drawable/ic_drag_handle_bg"
-                android:backgroundTint="@color/profile_1_color"
+                android:background="#6366F1"
                 android:paddingHorizontal="4dp"
                 android:paddingVertical="1dp"
                 android:text="16"
-                android:textColor="@color/white"
+                android:textColor="#FFFFFF"
                 android:textSize="9sp"
                 android:textStyle="bold" />
         </FrameLayout>
 
-        <!-- Clear Session / Cache Action -->
+        <!-- Clear Session -->
         <ImageButton
             android:id="@+id/btnClearData"
             android:layout_width="38dp"
             android:layout_height="38dp"
             android:background="?attr/selectableItemBackgroundBorderless"
-            android:contentDescription="@string/action_clear"
+            android:contentDescription="Clear"
             android:src="@drawable/ic_delete_sweep"
-            app:tint="@color/text_secondary" />
+            app:tint="#94A3B8" />
     </LinearLayout>
 
-    <!-- Horizontal Scrollable Tab Bar for 16 Profiles -->
+    <!-- 16 Profile Horizontal Bar -->
     <HorizontalScrollView
         android:id="@+id/hsvTabs"
         android:layout_width="match_parent"
         android:layout_height="44dp"
-        android:background="@color/surface_dark"
+        android:background="#1E293B"
         android:fillViewport="true"
         android:overScrollMode="never"
         android:scrollbars="none">
@@ -148,7 +147,6 @@
             android:paddingHorizontal="8dp" />
     </HorizontalScrollView>
 
-    <!-- Sleek Horizontal Progress Indicator -->
     <com.google.android.material.progressindicator.LinearProgressIndicator
         android:id="@+id/progressBar"
         android:layout_width="match_parent"
@@ -157,17 +155,14 @@
         android:max="100"
         android:progress="0"
         android:visibility="gone"
-        app:indicatorColor="@color/profile_1_color"
-        app:trackColor="@color/surface_border"
-        tools:visibility="visible" />
+        app:indicatorColor="#6366F1"
+        app:trackColor="#334155" />
 
-    <!-- Main View Area with Container, Loading and Error States -->
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1">
 
-        <!-- WebViews Container with Pull-to-Refresh -->
         <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
             android:id="@+id/swipeRefreshLayout"
             android:layout_width="match_parent"
@@ -177,15 +172,14 @@
                 android:id="@+id/webViewContainer"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@color/bg_dark" />
+                android:background="#0F172A" />
         </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
-        <!-- Loading Overlay -->
         <LinearLayout
             android:id="@+id/layoutLoading"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/bg_dark"
+            android:background="#0F172A"
             android:gravity="center"
             android:orientation="vertical"
             android:padding="24dp"
@@ -195,16 +189,15 @@
                 android:id="@+id/loadingSpinner"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
-                android:indeterminate="true"
-                android:indeterminateTint="@color/profile_1_color" />
+                android:indeterminate="true" />
 
             <TextView
                 android:id="@+id/tvLoadingTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:text="@string/loading_session"
-                android:textColor="@color/text_primary"
+                android:text="Connecting to Leonardo.ai…"
+                android:textColor="#F8FAFC"
                 android:textSize="15sp"
                 android:textStyle="bold" />
 
@@ -213,36 +206,27 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                android:text="@string/status_isolated"
-                android:textColor="@color/text_secondary"
+                android:text="Isolated Session"
+                android:textColor="#94A3B8"
                 android:textSize="12sp" />
         </LinearLayout>
 
-        <!-- Error Overlay -->
         <LinearLayout
             android:id="@+id/layoutError"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/bg_dark"
+            android:background="#0F172A"
             android:gravity="center"
             android:orientation="vertical"
             android:padding="32dp"
             android:visibility="gone">
 
-            <ImageView
-                android:layout_width="56dp"
-                android:layout_height="56dp"
-                android:contentDescription="@string/error_loading"
-                android:src="@drawable/ic_refresh"
-                app:tint="@color/text_secondary" />
-
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
                 android:gravity="center"
-                android:text="@string/error_loading"
-                android:textColor="@color/text_primary"
+                android:text="Could not load Leonardo.ai. Please check internet connection."
+                android:textColor="#F8FAFC"
                 android:textSize="15sp" />
 
             <com.google.android.material.button.MaterialButton
@@ -250,11 +234,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
-                android:backgroundTint="@color/profile_1_color"
-                android:text="@string/action_retry"
-                android:textColor="@color/white" />
+                android:text="Retry"
+                android:textColor="#FFFFFF" />
         </LinearLayout>
-
     </FrameLayout>
-
 </LinearLayout>
