@@ -10,7 +10,6 @@ import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.CookieManager;
@@ -33,22 +32,15 @@ import android.widget.Toast;
 import androidx.activity.OnBackPressedCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.webkit.Profile;
 import androidx.webkit.ProfileStore;
 import androidx.webkit.WebViewCompat;
 import androidx.webkit.WebViewFeature;
 
-import com.example.R;
-import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.button.MaterialButton;
-import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.progressindicator.LinearProgressIndicator;
 
 import java.io.File;
@@ -131,21 +123,20 @@ public class MainActivity extends AppCompatActivity {
         setupProfilesAndWebViews();
         buildHorizontalTabStrip();
 
-        // Start with Profile 1
         switchToProfile(0);
     }
 
     private void initColorsAndNames() {
-        int[] colorRes = {
-                R.color.profile_1_color, R.color.profile_2_color, R.color.profile_3_color, R.color.profile_4_color,
-                R.color.profile_5_color, R.color.profile_6_color, R.color.profile_7_color, R.color.profile_8_color,
-                R.color.profile_9_color, R.color.profile_10_color, R.color.profile_11_color, R.color.profile_12_color,
-                R.color.profile_13_color, R.color.profile_14_color, R.color.profile_15_color, R.color.profile_16_color
+        int[] hexColors = {
+                0xFF6366F1, 0xFF06B6D4, 0xFF10B981, 0xFFF59E0B,
+                0xFFEC4899, 0xFF8B5CF6, 0xFF3B82F6, 0xFF14B8A6,
+                0xFF84CC16, 0xFFEAB308, 0xFFF97316, 0xFFEF4444,
+                0xFFD946EF, 0xFFA855F7, 0xFF0284C7, 0xFF059669
         };
 
         for (int i = 0; i < NUM_PROFILES; i++) {
-            profileColors[i] = ContextCompat.getColor(this, colorRes[i]);
-            profileNames[i] = String.format(getString(R.string.title_profile_format), (i + 1));
+            profileColors[i] = hexColors[i];
+            profileNames[i] = "Profile " + (i + 1);
         }
     }
 
@@ -187,7 +178,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        // Prevent SwipeRefreshLayout from intercepting scroll events when page is scrolled down
         swipeRefreshLayout.setOnChildScrollUpCallback((parent, child) -> {
             WebView active = getCurrentWebView();
             return active != null && active.getScrollY() > 0;
@@ -226,8 +216,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         btnClearData.setOnClickListener(v -> showClearDataConfirmationDialog());
-
-        btnTabOverview.setOnClickListener(v -> showTabSwitcherBottomSheet());
+        btnTabOverview.setOnClickListener(v -> showTabSwitcherDialog());
     }
 
     private void setupBackHandler() {
@@ -245,9 +234,6 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    /**
-     * Cleans up stale or unverified Chromium variation seeds from previous runs
-     */
     private void cleanCorruptedVariationsSeed() {
         try {
             File dataDir = getApplicationContext().getDataDir();
@@ -265,10 +251,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    /**
-     * Initializes 16 isolated WebView instances.
-     * Uses AndroidX WebKit ProfileStore to sandbox cookies, cache, and localStorage per profile.
-     */
     private void setupProfilesAndWebViews() {
         try {
             isMultiProfileSupported = WebViewFeature.isFeatureSupported(WebViewFeature.MULTI_PROFILE);
@@ -292,7 +274,6 @@ public class MainActivity extends AppCompatActivity {
             webView.setVisibility(View.GONE);
             webView.setLayerType(View.LAYER_TYPE_HARDWARE, null);
 
-            // Configure multi-profile isolation before loading any URL
             if (isMultiProfileSupported && profileStore != null) {
                 try {
                     Profile profile = profileStore.getOrCreateProfile(profileId);
@@ -314,35 +295,29 @@ public class MainActivity extends AppCompatActivity {
     private void configureWebSettings(WebView webView) {
         WebSettings settings = webView.getSettings();
 
-        // 1. JavaScript & Storage
         settings.setJavaScriptEnabled(true);
         settings.setDomStorageEnabled(true);
         settings.setDatabaseEnabled(true);
         settings.setJavaScriptCanOpenWindowsAutomatically(true);
         settings.setSupportMultipleWindows(false);
 
-        // 2. Hardware acceleration & rendering
         settings.setLoadWithOverviewMode(true);
         settings.setUseWideViewPort(true);
         settings.setBuiltInZoomControls(true);
         settings.setDisplayZoomControls(false);
         settings.setSupportZoom(true);
 
-        // 3. File & Resource access for creative canvas uploads
         settings.setAllowFileAccess(true);
         settings.setAllowContentAccess(true);
         settings.setMixedContentMode(WebSettings.MIXED_CONTENT_COMPATIBILITY_MODE);
         settings.setMediaPlaybackRequiresUserGesture(false);
 
-        // 4. Modern Chrome Mobile User-Agent
         String defaultUa = settings.getUserAgentString();
         String modernUa = defaultUa.replace("; wv", "").replace("Version/4.0 ", "");
         settings.setUserAgentString(modernUa);
 
-        // 5. Cache settings
         settings.setCacheMode(WebSettings.LOAD_DEFAULT);
 
-        // 6. Cookies
         try {
             CookieManager cookieManager = CookieManager.getInstance();
             cookieManager.setAcceptCookie(true);
@@ -461,9 +436,6 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    /**
-     * Builds 16 horizontal pill tabs dynamically in the top tab strip.
-     */
     private void buildHorizontalTabStrip() {
         llTabStrip.removeAllViews();
         int padH = dpToPx(14);
@@ -492,18 +464,11 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    /**
-     * ZERO-LAG MULTI-TAB SWITCHING:
-     * - Inactive background tabs are frozen via onPause() (stopping JS timers, canvas & WebGL CPU drain)
-     * - Active foreground tab is unfrozen via onResume()
-     * - Only accessed profiles are loaded (lazy loading)
-     */
     public void switchToProfile(int index) {
         if (index < 0 || index >= NUM_PROFILES) return;
         int prevIndex = currentProfileIndex;
         currentProfileIndex = index;
 
-        // Freeze previous background tab to prevent lag and CPU drain
         if (prevIndex != index && webViews[prevIndex] != null) {
             webViews[prevIndex].onPause();
             webViews[prevIndex].setVisibility(View.GONE);
@@ -511,18 +476,16 @@ public class MainActivity extends AppCompatActivity {
 
         int activeColor = profileColors[index];
 
-        // Update Top Bar & Profile Identity
         viewProfileIndicator.setBackgroundColor(activeColor);
         tvCurrentProfile.setText(profileNames[index]);
-        tvCurrentProfile.setTextColor(ContextCompat.getColor(this, R.color.text_primary));
+        tvCurrentProfile.setTextColor(Color.WHITE);
         progressBar.setIndicatorColor(activeColor);
         loadingSpinner.setIndeterminateTintList(ColorStateList.valueOf(activeColor));
         btnRetry.setBackgroundColor(activeColor);
 
-        tvLoadingTitle.setText(getString(R.string.loading_session));
-        tvLoadingSubtitle.setText(profileNames[index] + " • " + getString(R.string.status_isolated));
+        tvLoadingTitle.setText("Connecting to Leonardo.ai…");
+        tvLoadingSubtitle.setText(profileNames[index] + " • Isolated Session");
 
-        // Update horizontal tab strip styles
         for (int i = 0; i < NUM_PROFILES; i++) {
             TextView chip = tabChipViews[i];
             if (chip != null) {
@@ -538,16 +501,15 @@ public class MainActivity extends AppCompatActivity {
                     GradientDrawable inactiveBg = new GradientDrawable();
                     inactiveBg.setShape(GradientDrawable.RECTANGLE);
                     inactiveBg.setCornerRadius(dpToPx(16));
-                    inactiveBg.setColor(ContextCompat.getColor(this, R.color.surface_card));
-                    inactiveBg.setStroke(dpToPx(1), ContextCompat.getColor(this, R.color.surface_border));
+                    inactiveBg.setColor(0xFF24334C);
+                    inactiveBg.setStroke(dpToPx(1), 0xFF334155);
                     chip.setBackground(inactiveBg);
-                    chip.setTextColor(ContextCompat.getColor(this, R.color.text_secondary));
+                    chip.setTextColor(0xFF94A3B8);
                     chip.setTypeface(null, android.graphics.Typeface.NORMAL);
                 }
             }
         }
 
-        // Auto scroll tab bar to center the active chip
         TextView selectedChip = tabChipViews[index];
         if (selectedChip != null) {
             hsvTabs.post(() -> {
@@ -559,11 +521,10 @@ public class MainActivity extends AppCompatActivity {
             });
         }
 
-        // Lazy load the webview when the profile is first accessed
         WebView currentWebView = webViews[index];
         if (currentWebView != null) {
             currentWebView.setVisibility(View.VISIBLE);
-            currentWebView.onResume(); // Resume JS and rendering
+            currentWebView.onResume();
 
             if (!isProfileLoaded[index]) {
                 isProfileLoaded[index] = true;
@@ -579,84 +540,19 @@ public class MainActivity extends AppCompatActivity {
         updateNavigationButtonStates();
     }
 
-    /**
-     * Shows a bottom sheet grid of all 16 profiles with live status and quick jump.
-     */
-    private void showTabSwitcherBottomSheet() {
-        BottomSheetDialog dialog = new BottomSheetDialog(this);
-        View dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_tab_grid, null);
-        dialog.setContentView(dialogView);
+    private void showTabSwitcherDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Switch Profile (16 Sessions)");
 
-        RecyclerView rv = dialogView.findViewById(R.id.rvTabGrid);
-        rv.setLayoutManager(new GridLayoutManager(this, 4));
-        rv.setAdapter(new TabGridAdapter(dialog));
-
-        dialog.show();
-    }
-
-    private class TabGridAdapter extends RecyclerView.Adapter<TabGridAdapter.ViewHolder> {
-        private final BottomSheetDialog dialog;
-
-        TabGridAdapter(BottomSheetDialog dialog) {
-            this.dialog = dialog;
+        CharSequence[] items = new CharSequence[NUM_PROFILES];
+        for (int i = 0; i < NUM_PROFILES; i++) {
+            String status = (i == currentProfileIndex) ? "  [Active]" : (isProfileLoaded[i] ? "  [Ready]" : "  [Idle]");
+            items[i] = "Profile " + (i + 1) + status;
         }
 
-        @NonNull
-        @Override
-        public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_tab_grid, parent, false);
-            return new ViewHolder(v);
-        }
-
-        @Override
-        public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-            int profileIdx = position;
-            int color = profileColors[profileIdx];
-            boolean isActive = (profileIdx == currentProfileIndex);
-            boolean isLoaded = isProfileLoaded[profileIdx];
-
-            holder.tvNumber.setText("P" + (profileIdx + 1));
-            holder.viewDot.setBackgroundColor(color);
-
-            if (isActive) {
-                holder.card.setStrokeColor(color);
-                holder.card.setStrokeWidth(dpToPx(2));
-                holder.card.setCardBackgroundColor(ContextCompat.getColor(MainActivity.this, R.color.surface_dark));
-                holder.tvStatus.setText("Active");
-                holder.tvStatus.setTextColor(color);
-            } else {
-                holder.card.setStrokeColor(ContextCompat.getColor(MainActivity.this, R.color.surface_border));
-                holder.card.setStrokeWidth(dpToPx(1));
-                holder.card.setCardBackgroundColor(ContextCompat.getColor(MainActivity.this, R.color.surface_card));
-                holder.tvStatus.setText(isLoaded ? "Ready" : "Idle");
-                holder.tvStatus.setTextColor(ContextCompat.getColor(MainActivity.this, R.color.text_secondary));
-            }
-
-            holder.itemView.setOnClickListener(v -> {
-                dialog.dismiss();
-                switchToProfile(profileIdx);
-            });
-        }
-
-        @Override
-        public int getItemCount() {
-            return NUM_PROFILES;
-        }
-
-        class ViewHolder extends RecyclerView.ViewHolder {
-            MaterialCardView card;
-            View viewDot;
-            TextView tvNumber;
-            TextView tvStatus;
-
-            ViewHolder(View itemView) {
-                super(itemView);
-                card = itemView.findViewById(R.id.cardTabItem);
-                viewDot = itemView.findViewById(R.id.viewDot);
-                tvNumber = itemView.findViewById(R.id.tvTabNumber);
-                tvStatus = itemView.findViewById(R.id.tvTabStatus);
-            }
-        }
+        builder.setItems(items, (dialog, which) -> switchToProfile(which));
+        builder.setNegativeButton("Cancel", null);
+        builder.show();
     }
 
     private void updateNavigationButtonStates() {
@@ -680,9 +576,9 @@ public class MainActivity extends AppCompatActivity {
     private void showClearDataConfirmationDialog() {
         new AlertDialog.Builder(this)
                 .setTitle(profileNames[currentProfileIndex])
-                .setMessage(getString(R.string.action_clear_confirm))
-                .setPositiveButton(R.string.dialog_clear, (dialog, which) -> clearCurrentProfileData())
-                .setNegativeButton(R.string.dialog_cancel, null)
+                .setMessage("Are you sure you want to clear cookies, cache, and local storage for this profile?")
+                .setPositiveButton("Clear", (dialog, which) -> clearCurrentProfileData())
+                .setNegativeButton("Cancel", null)
                 .show();
     }
 
@@ -710,7 +606,7 @@ public class MainActivity extends AppCompatActivity {
         layoutLoading.setVisibility(View.VISIBLE);
         active.loadUrl(LEONARDO_URL);
 
-        Toast.makeText(this, getString(R.string.clear_success) + " (" + profileNames[currentProfileIndex] + ")", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Profile data cleared (" + profileNames[currentProfileIndex] + ")", Toast.LENGTH_SHORT).show();
     }
 
     private int dpToPx(int dp) {
